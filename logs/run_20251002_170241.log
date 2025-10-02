@@ -1,0 +1,12 @@
+2025-10-02 17:02:41,887 [INFO] Logger initialized.
+2025-10-02 17:03:23,698 [INFO] 开始处理文案
+2025-10-02 17:03:23,702 [INFO] 解析标题: 一、情绪宣泄法（治本）, 分论点数: 6
+2025-10-02 17:03:23,747 [ERROR] 处理失败: 模板表头不存在列: 标题
+Traceback (most recent call last):
+  File "c:\Users\30305\Desktop\workspace\小红书文案转搞定模板\app\gui\main_window.py", line 110, in start_processing
+    "content_column": self.settings.get("content_column", "分论点内容"),
+  File "c:\Users\30305\Desktop\workspace\小红书文案转搞定模板\app\core\excel_writer.py", line 28, in write_to_template
+    title_col = col_index(column_map.get("title_column", "标题"))
+  File "c:\Users\30305\Desktop\workspace\小红书文案转搞定模板\app\core\excel_writer.py", line 25, in col_index
+    raise ValueError(f"模板表头不存在列: {name}")
+ValueError: 模板表头不存在列: 标题

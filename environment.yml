@@ -1,0 +1,11 @@
+name: xhs-tool
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - PyQt5
+      - openpyxl
+      - pyinstaller

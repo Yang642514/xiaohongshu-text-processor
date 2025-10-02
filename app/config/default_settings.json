@@ -1,0 +1,17 @@
+{
+  "template_excel_path": "C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/稿定设计-数据上传模板.xlsx",
+  "zip_output_dir": "C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/output",
+  "page_column": "页面",
+  "point_title_column": "文本_1",
+  "point_content_column": "文本_2",
+  "extra_text_column": "文本_3",
+  "extra_text_default": "内容仅供参考，身体不适请及时就医!",
+  "max_lines_per_paragraph": 0,
+  "max_chars_per_line": 0,
+  "version": "0.1.0",
+  "developer": "晴天",
+  "about_text": "小红书文案转搞定模板工具 v0.1.0\n作者：晴天\n使用说明：输入小红书文案，先进行文案处理，再进行写入打包，即可生成模板文件。",
+  "log_dir": "logs",
+  "delete_excel_after_zip": true,
+  "log_level": "INFO"
+}

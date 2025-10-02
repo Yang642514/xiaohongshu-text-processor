@@ -1,0 +1,6 @@
+2025-10-02 17:33:47,794 [INFO] Logger initialized.
+2025-10-02 17:34:38,790 [INFO] 设置已更新: {'template_excel_path': 'C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/稿定设计-数据上传.xlsx', 'output_dir': 'output', 'zip_output_dir': 'output', 'title_column': '', 'point_column': '文本_1', 'content_column': '文本_2'}
+2025-10-02 17:34:42,410 [INFO] 开始处理文案
+2025-10-02 17:34:42,411 [INFO] 解析标题: 一、情绪宣泄法（治本）, 分论点数: 6
+2025-10-02 17:34:42,454 [INFO] 已生成Excel: output\一、情绪宣泄法（治本）_20251002_173442.xlsx
+2025-10-02 17:34:42,458 [INFO] 已生成ZIP: output\一、情绪宣泄法（治本）_20251002_173442.zip
