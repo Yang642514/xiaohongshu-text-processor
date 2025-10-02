@@ -1,64 +1,121 @@
+/*
+============================================================
+  全局样式表 (style.qss)
+  说明：此文件定义 Qt Widgets 应用的外观样式。
+  使用方法：
+  - 直接修改颜色（#RRGGBB 或 rgb(r,g,b)）、圆角、内边距、字号等即可生效。
+  - 如需区分不同按钮类型，可在代码中为控件设置 objectName，
+    并在这里用选择器如 `QPushButton#Primary`、`#Secondary`、`#Danger` 定义。
+  - 注释已标出常见可调项与设计建议，便于你后续手动调整。
+============================================================
+*/
+
+/* 主窗口背景：控制主界面整体底色（浅灰更有层次，纯白更简洁）。 */
 QMainWindow {
-  background: #F8F8F8;
+  background: #F8F8F8; /* 改为纯白可用 #FFFFFF；深色主题可改为更深灰 */
 }
+
+/* 顶部主标题（objectName: TitleLabel）。提升层级感可加大字号或加粗。 */
 QLabel#TitleLabel {
   color: #111111;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;  /* 提示：可改 20–22px 更醒目 */
+  font-weight: 600; /* 半粗 */
 }
+
+/* 默认标签文本。与输入框字号保持一致更协调。 */
 QLabel {
   color: #1C1C1E;
-  font-size: 16px;
+  font-size: 14px;
 }
+
+/* 多行文本编辑框（文案编辑区）。圆角/边框/内边距可按喜好微调。 */
 QTextEdit {
   background: #FFFFFF;
-  border: 1px solid #E5E5EA;
-  border-radius: 12px;
-  padding: 10px;
-  font-size: 16px;
+  border: 1px solid #E5E5EA; /* 更明显可改为 #D1D1D6 */
+  border-radius: 10px;        /* 圆角越大越柔和，建议 8–12px 区间 */
+  padding: 8px;               /* 内边距，避免文字贴边 */
+  font-size: 15px;            /* 文本字号可与标签略有区分 */
 }
+
+/* 全局主按钮：颜色、圆角、内边距与字号共同决定视觉与尺寸。 */
 QPushButton {
-  background: #007AFF;
+  background:rgb(32, 121, 218); /* 蓝色主按钮（约等于 #2079DA） */
+  color: #FFFFFF;
+  border: none;          /* 无边框更现代。若需边框：1px solid #D1D1D6 */
+  border-radius: 8px;    /* 圆角可调 4–12px */
+  padding: 6px 6px;     /* 内边距（垂直 水平）。影响按钮“气质” */
+  font-size: 14px;       /* 文案字号。可调 13–15px */
+  min-width: 80px;       /* 最小宽度，避免过窄 */
+  min-height: 30px;      /* 最小高度。与行高/输入框高度要协调 */
+  font-weight: 500;      /* 半粗，增强“可点击”感 */
+}
+
+/* 悬停态：建议比常态稍亮或稍深，增强交互反馈。 */
+QPushButton:hover {
+  background: rgb(32, 121, 218); /* 当前与常态一致。更亮可用 #0A84FF */
+}
+
+/* 禁用态：弱化视觉，提示不可用。 */
+QPushButton:disabled {
+  background: #E5E5EA ; /* 淡蓝背景。 */
+  color: #8E8E93;       /* 灰文字 */
+}
+
+/* 设置页内联按钮（如“浏览”）：更紧凑以适配同一行布局。 */
+QPushButton#InlineButton {
+  background:rgb(32, 121, 218); /* 若希望弱化，可改为更浅蓝或灰色 */
   color: #FFFFFF;
   border: none;
-  border-radius: 12px;
-  padding: 8px 14px;
-  font-size: 16px;
+  padding: 4px 10px;      /* 增加水平内边距，避免文字靠边被裁剪 */
+  font-size: 13px;        /* 字号稍小，避免喧宾夺主 */
+  min-width: 76px;        /* 稍增宽度，确保“浏览”不被裁剪 */
+  min-height: 28px;       /* 略低的高度，贴合输入框行高 */
+  border-radius: 8px;     /* 与主按钮保持统一圆角 */
+  font-weight: 500;       /* 半粗 */
 }
-QPushButton:hover {
-  background: #0A84FF;
-}
-QPushButton:disabled {
-  background: #B0B0B0;
-}
-QProgressBar {
-  border: 0px;
-  background: #EFEFF4;
-  height: 8px;
-  border-radius: 4px;
-}
-QProgressBar::chunk {
-  background-color: #34C759;
-  border-radius: 4px;
-}
+
+/* 菜单栏：若不需要明显背景，可保持透明以减少干扰。 */
 QMenuBar {
   background: #F8F8F8;
   border: none;
 }
+
+/* 菜单项：增加内边距便于点击，圆角更柔和。 */
 QMenuBar::item {
   padding: 6px 10px;
   background: transparent;
   border-radius: 8px;
 }
+
+/* 菜单项选中/悬停高亮。想更明显可用更深灰（如 #D1D1D6）。 */
 QMenuBar::item:selected {
   background: #E5E5EA;
 }
-QDialog {
+
+/* 关于对话框背景：统一为白底卡片风格。 */
+QDialog#AboutDialog {
   background: #FFFFFF;
 }
+
+/* 关于文本说明。注意：Qt 样式表对 QLabel 基本不支持 line-height；
+   若需更松的行距，建议增加 padding 或改用 QTextBrowser 显示。 */
+QLabel#AboutLabel {
+  font-size: 13px;
+  line-height: 1.6em; /* 可能不会生效，仅作为标注 */
+}
+
+/* 关于对话框中的链接颜色。需要下划线可在文本中直接使用 HTML <u>。 */
+QLabel#AboutLink {
+  color:rgb(32, 121, 218);
+  font-size: 14px;
+}
+
+/* 单行输入框（路径、列名等）。建议与按钮高度接近以便对齐。 */
 QLineEdit {
   background: #FFFFFF;
-  border: 1px solid #E5E5EA;
-  border-radius: 10px;
-  padding: 6px 8px;
+  border: 1px solidrgb(6, 6, 15); /* 更明显可改为 #D1D1D6 */
+  border-radius: 8px;
+  padding: 5px 8px;           /* 文本与边框的距离 */
+  font-size: 14px;            /* 与标签一致更协调 */
+  min-height: 25px;           /* 更紧凑的行高，设置页更精炼 */
 }

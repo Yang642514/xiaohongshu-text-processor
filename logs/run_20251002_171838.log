@@ -1,4 +1,0 @@
-2025-10-02 17:18:38,696 [INFO] Logger initialized.
-2025-10-02 17:20:15,764 [INFO] 设置已更新: {'template_excel_path': '稿定设计-数据上传.xlsx', 'output_dir': 'output', 'zip_output_dir': 'output', 'title_column': '', 'point_column': '文本_1', 'content_column': '文本_2'}
-2025-10-02 17:21:03,331 [INFO] 设置已更新: {'template_excel_path': '稿定设计-数据上传.xlsx', 'output_dir': 'output', 'zip_output_dir': 'output', 'title_column': '', 'point_column': '文本_1', 'content_column': '文本_2'}
-2025-10-02 17:24:56,435 [INFO] 设置已更新: {'template_excel_path': 'C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/稿定设计-数据上传.xlsx', 'output_dir': 'output', 'zip_output_dir': 'output', 'title_column': '', 'point_column': '文本_1', 'content_column': '文本_2'}

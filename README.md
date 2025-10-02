@@ -71,13 +71,13 @@ python main.py
 确保已激活虚拟环境并安装依赖：
 ```
 conda activate xhs-tool
-pyinstaller --noconfirm --windowed --name 小红书文案助手 \
+pyinstaller --noconfirm --windowed --name 小红书文案转模板助手 \
   --add-data "稿定设计-数据上传.xlsx;." \
   --add-data "app/config/default_settings.json;app/config" \
   main.py
 ```
 
-打包完成后的可执行文件位于 `dist/小红书文案助手.exe`。
+打包完成后的可执行文件位于 `dist/小红书文案转模板助手.exe`。
 
 也可使用提供的脚本：
 ```

@@ -1,2 +1,0 @@
-2025-10-02 19:43:35,069 [INFO] Logger initialized.
-2025-10-02 19:43:51,824 [INFO] 设置已更新: {'template_excel_path': 'C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/稿定设计-数据上传模板.xlsx', 'zip_output_dir': 'output', 'page_column': '页面', 'point_title_column': '文本_1', 'point_content_column': '文本_2', 'extra_text_column': '文本_3', 'extra_text_default': '内容仅供参考，身体不适请及时就医!'}

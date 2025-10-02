@@ -11,6 +11,7 @@
   "version": "0.1.0",
   "developer": "晴天",
   "about_text": "小红书文案转搞定模板工具 v0.1.0\n作者：晴天\n使用说明：输入小红书文案，先进行文案处理，再进行写入打包，即可生成模板文件。",
+  "contact_url": "https://eau4tqz5r1u.feishu.cn/docx/SwiodZYAAoi0YexNgAyc36LpnSh?from=from_copylink",
   "log_dir": "logs",
   "delete_excel_after_zip": true,
   "log_level": "INFO"

@@ -3,7 +3,7 @@ from datetime import datetime
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QTextEdit, QPushButton,
-    QProgressBar, QMessageBox, QAction, QLabel, QHBoxLayout
+    QAction, QLabel, QHBoxLayout, QSizePolicy
 )
 
 from app.core.logger import setup_logger
@@ -14,12 +14,13 @@ from app.core.zipper import make_zip
 from app.core.utils import load_settings, save_settings
 from app.gui.settings_dialog import SettingsDialog
 from app.gui.about_dialog import AboutDialog
+from app.gui.message_dialog import MessageDialog
 
 
 class MainWindow(QMainWindow):
     def __init__(self, settings_path: str):
         super().__init__()
-        self.setWindowTitle("小红书文案助手")
+        self.setWindowTitle("文案转模板")
 
         self.settings_path = settings_path
         self.settings = load_settings(settings_path)
@@ -34,13 +35,22 @@ class MainWindow(QMainWindow):
         layout.setSpacing(12)
 
         top_row = QHBoxLayout()
-        self.info_label = QLabel("小红书文案助手")
+        top_row.setContentsMargins(0, 0, 0, 0)
+        top_row.setSpacing(12)
+        self.info_label = QLabel("文案转模板")
         self.info_label.setObjectName("TitleLabel")
-        self.info_label.setAlignment(Qt.AlignLeft)
+        self.info_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         top_row.addWidget(self.info_label)
+        # 当前主题标签，显示最近一次处理的文案标题
+        self.theme_label = QLabel("当前主题：")
+        self.theme_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        top_row.addWidget(self.theme_label)
+        top_row.addStretch(1)
         # 右侧提示信息区域
         self.status_label = QLabel("提示：请先点击“处理文案”，再写入模板并压缩")
-        self.status_label.setAlignment(Qt.AlignRight)
+        self.status_label.setWordWrap(False)
+        self.status_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.status_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         top_row.addWidget(self.status_label)
         layout.addLayout(top_row)
 
@@ -48,20 +58,20 @@ class MainWindow(QMainWindow):
         self.text_input.setPlaceholderText("粘贴文案...")
         layout.addWidget(self.text_input)
 
-        self.progress = QProgressBar()
-        self.progress.setRange(0, 100)
-        self.progress.setTextVisible(False)
-        layout.addWidget(self.progress)
+        # 进度条已移除，改用状态文本提示
 
         btn_row = QHBoxLayout()
         self.process_btn = QPushButton("处理文案")
+        self.process_btn.setFixedHeight(34)
         self.process_btn.clicked.connect(self.process_text)
         self.write_zip_btn = QPushButton("写入模板并压缩")
+        self.write_zip_btn.setFixedHeight(34)
         self.write_zip_btn.clicked.connect(self.write_and_zip)
         # 写入功能随时可用
         self.write_zip_btn.setEnabled(True)
         # 新增：清空按钮（清空编辑框与会话标题）
         self.clear_btn = QPushButton("清空")
+        self.clear_btn.setFixedHeight(34)
         self.clear_btn.clicked.connect(self.clear_text_and_title)
         btn_row.addWidget(self.process_btn)
         btn_row.addWidget(self.write_zip_btn)
@@ -93,17 +103,17 @@ class MainWindow(QMainWindow):
             self.logger.info("设置已更新: %s", updated)
 
     def open_about(self):
-        dlg = AboutDialog(self.settings.get("about_text", ""), self)
+        contact_url = self.settings.get("contact_url", "")
+        dlg = AboutDialog(self.settings.get("about_text", ""), contact_url, self)
         dlg.exec_()
         # 关于窗口关闭后不更改标题记忆
 
     def process_text(self):
         try:
             self.process_btn.setEnabled(False)
-            self.progress.setValue(5)
             raw = self.text_input.toPlainText().strip()
             if not raw:
-                QMessageBox.warning(self, "提示", "请输入文案内容")
+                MessageDialog.warning(self, "提示", "请输入文案内容")
                 return
             self.logger.info("开始处理文案")
 
@@ -114,15 +124,15 @@ class MainWindow(QMainWindow):
                 points = already_pairs
                 title = getattr(self, "last_title", "")
             else:
-                self.progress.setValue(15)
                 title, points = extract_title_and_points(raw)
                 self.logger.info("解析标题: %s, 分论点数: %d", title, len(points))
                 # 记忆标题（用于命名与再次处理场景）
                 self.last_title = title
+            # 更新当前主题标签（使用记忆的标题）
+            self.theme_label.setText(f"当前主题：{self.last_title}")
 
             # 上述分支已完成解析，这里不重复解析
-
-            self.progress.setValue(35)
+            # 解析完成，开始规范化与排版
             # 标点与排版（再次处理也只对内容做规整，模板不嵌套）
             formatted_points = []
             for pt_title, pt_content in points:
@@ -137,30 +147,27 @@ class MainWindow(QMainWindow):
                 )
                 formatted_points.append((norm_title, fmt_content))
 
-            self.progress.setValue(55)
             # 渲染处理模板并显示供用户微调
             processed = render_processed_template(formatted_points)
             self.text_input.setPlainText(processed)
-            self.progress.setValue(100)
-            QMessageBox.information(self, "完成", "已生成处理模板（去嵌套），可微调后写入模板")
+            MessageDialog.info(self, "完成", "已生成处理模板（去嵌套），可微调后写入模板")
             # 更新提示（写入功能随时可用）
             self.status_label.setText("处理完成：现在或稍后均可写入模板并压缩")
             self.process_btn.setEnabled(True)
 
         except Exception as e:
             self.logger.exception("处理失败: %s", e)
-            QMessageBox.critical(self, "错误", f"处理失败：{e}")
+            MessageDialog.error(self, "错误", f"处理失败：{e}")
             self.process_btn.setEnabled(True)
 
     def write_and_zip(self):
         try:
             # 写入功能随时可用：不禁用按钮
-            self.progress.setValue(10)
             # 解析编辑框中的处理模板
             processed_text = self.text_input.toPlainText().strip()
             if not processed_text:
                 # 空文本也允许写入：提示用户需提供内容（保留弹窗以避免空文件）
-                QMessageBox.warning(self, "提示", "编辑框为空，请粘贴或处理文案后再写入")
+                MessageDialog.warning(self, "提示", "编辑框为空，请粘贴或处理文案后再写入")
                 return
             if not getattr(self, "last_title", ""):
                 # 未有标题：从当前文本尝试提取一次标题用于命名
@@ -184,9 +191,10 @@ class MainWindow(QMainWindow):
                     )
                     formatted_points.append((norm_title, fmt_content))
                 pairs = formatted_points
+            # 更新当前主题（写入前确保同步显示）
+            self.theme_label.setText(f"当前主题：{self.last_title}")
             self.logger.info("处理模板解析出分论点: %d", len(pairs))
 
-            self.progress.setValue(40)
             # 写入 Excel（移除标题列，使用页面/文本_1/文本_2）
             out_xlsx = write_to_template(
                 template_path=self.settings.get("template_excel_path"),
@@ -204,7 +212,6 @@ class MainWindow(QMainWindow):
             )
             self.logger.info("已生成Excel: %s", out_xlsx)
 
-            self.progress.setValue(70)
             # 生成 ZIP
             zip_path = make_zip(out_xlsx, self.settings.get("zip_output_dir", "output"))
             self.logger.info("已生成ZIP: %s", zip_path)
@@ -217,19 +224,19 @@ class MainWindow(QMainWindow):
                 except Exception as de:
                     self.logger.warning("删除Excel失败: %s", de)
 
-            self.progress.setValue(100)
-            QMessageBox.information(self, "完成", f"已生成压缩包：\n{zip_path}")
+            MessageDialog.info(self, "完成", f"已生成压缩包：\n{zip_path}")
             self.status_label.setText(f"完成：压缩包已生成 → {os.path.basename(zip_path)}")
             # 按钮保持可用
             self.write_zip_btn.setEnabled(True)
 
         except Exception as e:
             self.logger.exception("写入压缩失败: %s", e)
-            QMessageBox.critical(self, "错误", f"写入压缩失败：{e}")
+            MessageDialog.error(self, "错误", f"写入压缩失败：{e}")
             self.write_zip_btn.setEnabled(True)
 
     def clear_text_and_title(self):
         """清空编辑框与会话标题，作为一次处理会话的结束。"""
         self.text_input.clear()
         self.last_title = ""
+        self.theme_label.setText("当前主题：")
         self.status_label.setText("已清空：可粘贴新文案进行处理")
