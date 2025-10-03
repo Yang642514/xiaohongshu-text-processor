@@ -1,0 +1,28 @@
+{
+  "status_field_name": "笔记状态",
+  "status_field_id": "fldOSMyroo",
+  "content_field_name": "去敏感词",
+  "content_field_id": "fldTnwIoHy",
+  "title_field_id": "fld4E5tsck",
+  "fields_map": {
+    "笔记ID": "fldzWqEJE5",
+    "创作时间": "fldUCycqp1",
+    "笔记链接": "fldi7SFZuC",
+    "笔记标题": "fld4E5tsck",
+    "笔记信息": "fldxJoj1yn",
+    "标题仿写": "fld3wRJVxj",
+    "标题（人工审核）": "fld32DPbKm",
+    "笔记模板参考": "flds7ibi0D",
+    "内容大纲（人工审核）": "fldJ16G8Nm",
+    "去敏感词": "fldTnwIoHy",
+    "发布内容一键复制": "fldTJgGate",
+    "发布账号": "fldIUEoQ8R",
+    "笔记状态": "fldOSMyroo"
+  },
+  "view_id": "",
+  "field_names": null,
+  "sort_field_name": "",
+  "sort_desc": true,
+  "automatic_fields": false,
+  "items_count": 2
+}

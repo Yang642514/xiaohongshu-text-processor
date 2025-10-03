@@ -16,16 +16,16 @@ class SettingsDialog(QDialog):
         form = QFormLayout()
         form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         form.setFormAlignment(Qt.AlignLeft)
-        form.setHorizontalSpacing(12)
-        form.setVerticalSpacing(10)
+        form.setHorizontalSpacing(8)
+        form.setVerticalSpacing(6)
         form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         form.setRowWrapPolicy(QFormLayout.DontWrapRows)
 
         self.tpl_edit = QLineEdit(self.settings.get("template_excel_path", ""))
-        self.tpl_edit.setFixedHeight(28)
+        self.tpl_edit.setFixedHeight(26)
         self.tpl_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.zip_edit = QLineEdit(self.settings.get("zip_output_dir", "output"))
-        self.zip_edit.setFixedHeight(28)
+        self.zip_edit.setFixedHeight(26)
         self.zip_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.page_col = QLineEdit(self.settings.get("page_column", "页面"))
         self.point_title_col = QLineEdit(self.settings.get("point_title_column", "文本_1"))
@@ -33,7 +33,6 @@ class SettingsDialog(QDialog):
         # 新增：与默认内容
         self.extra_text_col = QLineEdit(self.settings.get("extra_text_column", "文本_3"))
         self.extra_text_default = QLineEdit(self.settings.get("extra_text_default", "内容仅供参考，身体不适请及时就医!"))
-
         # 以下逻辑已内置：再次处理不嵌套与尾段过滤始终启用；不在设置中展示。
 
         # 模板路径（右侧内联浏览按钮）
@@ -44,7 +43,11 @@ class SettingsDialog(QDialog):
         tpl_row.addWidget(self.tpl_edit)
         btn_browse_tpl = QPushButton("浏览")
         btn_browse_tpl.setObjectName("InlineButton")
-        btn_browse_tpl.setFixedHeight(28)
+        btn_browse_tpl.setFixedHeight(24)
+        try:
+            btn_browse_tpl.setMinimumWidth(64)
+        except Exception:
+            pass
         btn_browse_tpl.clicked.connect(self._browse_template)
         tpl_row.addWidget(btn_browse_tpl)
         # 确保编辑框在该行中占据更多空间，避免显示不完整
@@ -64,7 +67,11 @@ class SettingsDialog(QDialog):
         zip_row.addWidget(self.zip_edit)
         btn_browse_zip = QPushButton("浏览")
         btn_browse_zip.setObjectName("InlineButton")
-        btn_browse_zip.setFixedHeight(28)
+        btn_browse_zip.setFixedHeight(24)
+        try:
+            btn_browse_zip.setMinimumWidth(64)
+        except Exception:
+            pass
         btn_browse_zip.clicked.connect(self._browse_zip_dir)
         zip_row.addWidget(btn_browse_zip)
         # 同样设置伸展，保证前两个编辑框完整显示
@@ -80,6 +87,8 @@ class SettingsDialog(QDialog):
         form.addRow(self._vcenter_label("分论点内容列名"), self.point_content_col)
         form.addRow(self._vcenter_label("页面注释列名"), self.extra_text_col)
         form.addRow(self._vcenter_label("页面注释内容"), self.extra_text_default)
+
+        # （移除）飞书配置入口，迁移至待同步页面
         # 不展示：再次处理不嵌套、尾段过滤开关，以及尾段关键词相关配置
         
         layout.addLayout(form)
@@ -89,10 +98,10 @@ class SettingsDialog(QDialog):
         btns.setSpacing(14)
         btns.setAlignment(Qt.AlignCenter)
         btn_check = QPushButton("检测模板可用性")
-        btn_check.setFixedHeight(34)
+        btn_check.setFixedHeight(30)
         btn_check.clicked.connect(self._check_template)
         btn_ok = QPushButton("保存")
-        btn_ok.setFixedHeight(34)
+        btn_ok.setFixedHeight(30)
         btn_ok.clicked.connect(self.accept)
         btns.addWidget(btn_check)
         btns.addWidget(btn_ok)
@@ -116,9 +125,9 @@ class SettingsDialog(QDialog):
         from PyQt5.QtWidgets import QLabel
         lbl = QLabel(text)
         lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        # 固定高度以与右侧 28px 的编辑框对齐
-        lbl.setFixedHeight(28)
-        lbl.setFixedWidth(120)
+        # 固定高度以与右侧编辑框对齐（更紧凑）
+        lbl.setFixedHeight(26)
+        lbl.setFixedWidth(110)
         return lbl
 
     def _browse_template(self):
@@ -140,6 +149,7 @@ class SettingsDialog(QDialog):
             "point_content_column": self.point_content_col.text().strip() or "文本_2",
             "extra_text_column": self.extra_text_col.text().strip() or "文本_3",
             "extra_text_default": self.extra_text_default.text().strip() or "内容仅供参考，身体不适请及时就医!",
+            # （移除）飞书相关配置由独立配置页负责保存
         }
 
     def _check_template(self):

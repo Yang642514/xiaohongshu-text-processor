@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer, QThread, pyqtSignal
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QTextEdit, QPushButton,
     QAction, QLabel, QHBoxLayout, QSizePolicy
@@ -15,6 +15,7 @@ from app.core.utils import load_settings, save_settings
 from app.gui.settings_dialog import SettingsDialog
 from app.gui.about_dialog import AboutDialog
 from app.gui.message_dialog import MessageDialog
+from app.gui.feishu_dialog import FeishuDialog
 
 
 class MainWindow(QMainWindow):
@@ -83,6 +84,54 @@ class MainWindow(QMainWindow):
         # 存储最近一次处理的标题（会话级，初始化为空）
         self.last_title = ""
 
+        # 启动后预取飞书数据到缓存，提升打开同步页面体验
+        try:
+            class _PrefetchThread(QThread):
+                result_ready = pyqtSignal(list)
+                error = pyqtSignal(str)
+
+                def __init__(self, settings: dict):
+                    super().__init__()
+                    self._settings = settings
+
+                def run(self):
+                    try:
+                        from app.core.feishu_client import FeishuClient
+                        client = FeishuClient(self._settings)
+                        items = client.search_done_records()
+                        self.result_ready.emit(items)
+                    except Exception as e:
+                        self.error.emit(str(e))
+
+            def _start_prefetch():
+                try:
+                    # 保持引用在实例上，避免被GC
+                    self._prefetch_thread = _PrefetchThread(self.settings)
+
+                    def _on_ok(items: list):
+                        try:
+                            self.settings["feishu_cached_items"] = items
+                            save_settings(self.settings_path, self.settings)
+                            self.status_label.setText(f"已预取飞书数据：{len(items)} 条")
+                        except Exception:
+                            pass
+
+                    def _on_err(err: str):
+                        try:
+                            self.logger.debug("预取飞书数据失败: %s", err)
+                        except Exception:
+                            pass
+
+                    self._prefetch_thread.result_ready.connect(_on_ok)
+                    self._prefetch_thread.error.connect(_on_err)
+                    self._prefetch_thread.start()
+                except Exception:
+                    pass
+
+            QTimer.singleShot(0, _start_prefetch)
+        except Exception:
+            pass
+
         # Menu actions
         menubar = self.menuBar()
         settings_action = QAction("设置", self)
@@ -91,6 +140,10 @@ class MainWindow(QMainWindow):
         about_action.triggered.connect(self.open_about)
         menubar.addAction(settings_action)
         menubar.addAction(about_action)
+        # 飞书入口
+        feishu_action = QAction("同步飞书数据", self)
+        feishu_action.triggered.connect(self.open_feishu_dialog)
+        menubar.addAction(feishu_action)
 
     def open_settings(self):
         dlg = SettingsDialog(self.settings, self)
@@ -107,6 +160,25 @@ class MainWindow(QMainWindow):
         dlg = AboutDialog(self.settings.get("about_text", ""), contact_url, self)
         dlg.exec_()
         # 关于窗口关闭后不更改标题记忆
+
+    def open_feishu_dialog(self):
+        def on_edit(payload: dict):
+            # 填充前确保编辑框与标题清空
+            try:
+                self.clear_text_and_title()
+            except Exception:
+                pass
+            content = str(payload.get("content", "")).strip()
+            existing = self.text_input.toPlainText().strip()
+            if existing:
+                merged = f"{content}\n\n----\n原内容：\n{existing}"
+            else:
+                merged = content
+            self.text_input.setPlainText(merged)
+            # 静默注入，不再弹出提示框，减少打断
+
+        dlg = FeishuDialog(self.settings, on_edit, self, settings_path=self.settings_path)
+        dlg.exec_()
 
     def process_text(self):
         try:

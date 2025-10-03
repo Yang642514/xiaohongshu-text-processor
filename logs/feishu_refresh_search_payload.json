@@ -1,0 +1,16 @@
+{
+  "filter": {
+    "conjunction": "and",
+    "conditions": [
+      {
+        "field_name": "笔记状态",
+        "operator": "is",
+        "value": [
+          "已完成"
+        ]
+      }
+    ]
+  },
+  "page_size": 50,
+  "automatic_fields": false
+}

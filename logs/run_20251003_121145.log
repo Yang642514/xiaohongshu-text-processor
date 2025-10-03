@@ -1,0 +1,10 @@
+2025-10-03 12:11:45,896 [INFO] Logger initialized.
+2025-10-03 12:11:51,933 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 12:11:52,486 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 12:11:52,486 [INFO] [FeishuDialog] 刷新获取到 1 条记录
+2025-10-03 12:12:02,036 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 12:12:02,603 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 12:12:02,611 [INFO] [FeishuDialog] 刷新获取到 1 条记录
+2025-10-03 12:12:05,588 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 12:12:06,153 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 12:12:06,161 [INFO] [FeishuDialog] 刷新获取到 1 条记录

@@ -14,7 +14,7 @@ class MessageDialog(QDialog):
         if icon:
             icon_label = QLabel(icon)
             icon_label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-            icon_label.setStyleSheet("font-size: 16px;")
+            icon_label.setStyleSheet("font-size: 15px;")
             layout.addWidget(icon_label, alignment=Qt.AlignTop)
 
         # 中间文字区域

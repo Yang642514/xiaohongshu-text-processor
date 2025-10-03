@@ -43,10 +43,10 @@ QPushButton {
   color: #FFFFFF;
   border: none;          /* 无边框更现代。若需边框：1px solid #D1D1D6 */
   border-radius: 8px;    /* 圆角可调 4–12px */
-  padding: 6px 6px;     /* 内边距（垂直 水平）。影响按钮“气质” */
+  padding: 5px 8px;     /* 更紧凑的内边距 */
   font-size: 14px;       /* 文案字号。可调 13–15px */
-  min-width: 80px;       /* 最小宽度，避免过窄 */
-  min-height: 30px;      /* 最小高度。与行高/输入框高度要协调 */
+  min-width: 76px;       /* 更紧凑的最小宽度 */
+  min-height: 26px;      /* 全局按钮高度略降 */
   font-weight: 500;      /* 半粗，增强“可点击”感 */
 }
 
@@ -66,10 +66,10 @@ QPushButton#InlineButton {
   background:rgb(32, 121, 218); /* 若希望弱化，可改为更浅蓝或灰色 */
   color: #FFFFFF;
   border: none;
-  padding: 4px 10px;      /* 增加水平内边距，避免文字靠边被裁剪 */
+  padding: 3px 8px;       /* 更紧凑以匹配设置页布局 */
   font-size: 13px;        /* 字号稍小，避免喧宾夺主 */
-  min-width: 76px;        /* 稍增宽度，确保“浏览”不被裁剪 */
-  min-height: 28px;       /* 略低的高度，贴合输入框行高 */
+  min-width: 64px;        /* 适配“浏览”文字宽度 */
+  min-height: 24px;       /* 更紧凑的高度 */
   border-radius: 8px;     /* 与主按钮保持统一圆角 */
   font-weight: 500;       /* 半粗 */
 }
@@ -107,13 +107,13 @@ QLabel#AboutLabel {
 /* 关于对话框中的链接颜色。需要下划线可在文本中直接使用 HTML <u>。 */
 QLabel#AboutLink {
   color:rgb(32, 121, 218);
-  font-size: 14px;
+  font-size: 12px;
 }
 
 /* 单行输入框（路径、列名等）。建议与按钮高度接近以便对齐。 */
 QLineEdit {
   background: #FFFFFF;
-  border: 1px solidrgb(6, 6, 15); /* 更明显可改为 #D1D1D6 */
+  border: 1px solid #E5E5EA; /* 更明显可改为 #D1D1D6 */
   border-radius: 8px;
   padding: 5px 8px;           /* 文本与边框的距离 */
   font-size: 14px;            /* 与标签一致更协调 */
