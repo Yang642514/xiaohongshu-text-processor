@@ -6,7 +6,10 @@
       "Bash(rm:*)",
       "Bash(find:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\n更新小红书文案转搞定模板应用\n\n- 添加消息对话框功能\n- 改进主窗口和设置对话框界面\n- 优化样式配置\n- 清理旧的日志文件\n- 添加新的静态资源文件\n- 更新依赖和环境配置\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\n添加飞书集成功能和UI改进\n\n- 新增飞书客户端和配置对话框\n- 添加飞书数据获取功能\n- 改进主窗口界面和功能\n- 优化样式配置\n- 清理旧的日志文件\n- 添加UI预览功能\n- 更新依赖配置\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(ping:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": []

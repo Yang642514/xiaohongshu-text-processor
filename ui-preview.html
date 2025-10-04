@@ -1,99 +1,174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <title>UI预览：文案转模板</title>
-    <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background:#F8F8F8; margin:0; padding:20px; }
-      .card { background:#FFFFFF; border:1px solid #E5E5EA; border-radius:12px; padding:16px; max-width:820px; margin:0 auto; }
-      h1 { font-size:18px; font-weight:600; color:#111; margin:0 0 12px; }
-      .row { display:flex; justify-content:space-between; align-items:center; gap:16px; }
-      .label { font-size:14px; color:#1C1C1E; }
-      .status { font-size:14px; color:#1C1C1E; opacity:0.8; }
-      .about { margin-top:16px; padding-top:12px; border-top:1px dashed #E5E5EA; }
-      a { color:#007AFF; text-decoration:none; }
-      a:hover { text-decoration:underline; }
-      .form { margin-top:18px; display:grid; grid-template-columns: 140px 1fr 96px; grid-row-gap:8px; grid-column-gap:10px; align-items:center; }
-      .form label { text-align:right; }
-      .center-buttons { margin-top:18px; display:flex; justify-content:center; gap:16px; }
-      .btn { background:#007AFF; color:#fff; border-radius:8px; padding:6px 12px; min-width:80px; min-height:30px; font-size:14px; border:none; }
-      .row h1, .row .label, .row .status { white-space:nowrap; }
-      input { border:1px solid #E5E5EA; border-radius:8px; padding:6px 8px; font-size:14px; min-height:32px; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>配图页面预览</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin: 16px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 18px; margin: 0 0 8px; }
+    .cfg { border: 1px solid #e5e7eb; padding: 10px; border-radius: 8px; }
+    .row { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+    /* 左侧标签统一列宽并居中，取“关键词分析”近似宽度 */
+    label { color: #374151; min-width: 170px; text-align: center; height:24px; display:inline-flex; align-items:center; justify-content:center; }
+    input, select { padding: 4px 6px; border: 1px solid #d1d5db; border-radius: 6px; height:24px; }
+    .divider { height: 1px; background: #e5e7eb; margin: 10px 0; }
+    .table-wrap { overflow: hidden; }
+    .table { margin-top: 6px; border-collapse: collapse; width: 100%; table-layout: fixed; border:1px solid #444; }
+    .table-wrapper { overflow: hidden; max-height: 420px; }
+    .table th, .table td { border: 1px solid #444; padding: 6px; font-size: 12px; white-space: nowrap; }
+    /* 让最后一列固定贴右边，保持可视 */
+    .table th:last-child, .table td:last-child { position: sticky; right: 0; background: #fff; }
+    .table th { background: #f5f6f8; text-align: center; font-weight: 600; color:#333; border-bottom:1px solid #d9d9de; }
+    /* 移除首行强调色，强调表头 */
+    .col-title { width: 30%; }
+    .col-keyword { width: 30%; }
+    .col-preview { width: 140px; }
+    .col-actions { width: 180px; }
+    .col-status { width: 72px; }
+    .actions { display: flex; gap: 6px; }
+    .btn-sm { padding: 2px 8px; font-size: 12px; height: 22px; }
+    .footer { margin-top: 10px; display: flex; gap: 8px; }
+    button { padding: 6px 10px; border: 1px solid #2563eb; color: #fff; background: #3b82f6; border-radius: 6px; cursor: pointer; }
+    button.secondary { border-color: #6b7280; background: #9ca3af; }
+    .thumb { width: 140px; height: 100px; border: 1px solid #444; display: flex; align-items:center; justify-content:center; color:#6b7280; position: relative; cursor: zoom-in; }
+    .thumb:hover { box-shadow: 0 0 0 2px #93c5fd inset; }
+    .thumb img { max-width: 100%; max-height: 100%; object-fit: cover; }
+    .preview-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; }
+    .preview-content { background: #fff; padding: 12px; border-radius: 8px; max-width: 80vw; max-height: 80vh; }
+    .preview-content img { max-width: 100%; max-height: 70vh; display:block; }
+    .status { display:flex; align-items:center; gap:8px; }
+    .status .save { margin-left:auto; height:26px; padding:0 14px; min-width:90px; display:inline-flex; align-items:center; justify-content:center; }
+    .fs-btn { height:26px; min-width:72px; }
+    /* 通知弹窗（模拟）：点击外部关闭 + 3秒自动关闭 */
+    .toast-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.25); display: none; align-items: center; justify-content: center; }
+    .toast-content { background: #111827; color:#fff; padding: 12px 16px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); max-width: 60vw; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>配图页面</h1>
+    <div class="cfg">
+      <!-- 第一行：图片来源 + API Key -->
       <div class="row">
-        <h1>文案转模板</h1>
-        <div class="label">当前主题：<span style="opacity:.7">（处理后显示文案标题；清空后重置为空）</span></div>
-        <div class="status">提示：请先点击“处理文案”，再写入模板并压缩</div>
+        <label>图片来源</label>
+        <select style="height:24px"><option selected>pixabay</option><option>pexels</option><option>ai</option></select>
+        <label>API Key</label>
+        <input placeholder="按来源填写 API Key" style="max-width:320px;height:24px"/>
       </div>
-      <div class="about">
-        <div class="label">关于窗口：带“×”关闭按钮；包含 <a href="#">联系我</a> 超链接（打开浏览器）。</div>
-      </div>
-      <div class="form">
-        <label>模板Excel路径</label>
-        <input placeholder="选择文件..." />
-        <button class="btn">浏览</button>
-        <label>压缩包目录</label>
-        <input placeholder="选择目录..." />
-        <button class="btn">浏览</button>
-        <label>页面列名</label>
-        <input placeholder="页面" />
-        <div></div>
-        <label>分论点标题列名</label>
-        <input placeholder="文本_1" />
-        <div></div>
-        <label>分论点内容列名</label>
-        <input placeholder="文本_2" />
-        <div></div>
-        <label>页面注释列名</label>
-        <input placeholder="文本_3" />
-        <div></div>
-        <label>页面注释默认内容</label>
-        <input placeholder="内容仅供参考，身体不适请及时就医!" />
-        <div></div>
-      </div>
-      <div class="center-buttons">
-        <button class="btn">检测模板</button>
-        <button class="btn">保存</button>
+      <!-- 第二行：抠图设置 + API Key -->
+      <div class="row"><label>抠图</label><input type="checkbox" checked style="height:24px" /><span>方式</span><select style="height:24px"><option>rembg</option><option>api</option></select><label>API Key</label><input placeholder="抠图 API Key" style="max-width:260px;height:24px"/></div>
+      <!-- 第三行：裁剪设置（含尺寸） -->
+      <div class="row"><label>裁剪</label><input type="checkbox" checked style="height:24px" /><span>尺寸</span><input value="1024x1024" style="max-width:120px;height:24px"/><span>模式</span><select style="height:24px"><option>cover</option><option>contain</option></select><span>填充色</span><input value="#FFFFFF" style="max-width:120px;height:24px"/></div>
+      <!-- 第四行：预览输出设置 -->
+      <div class="row"><label>预览输出</label><span>缩略图尺寸</span><input value="160x120" style="max-width:120px;height:24px"/><span>输出格式</span><select style="height:24px"><option>png</option><option>jpg</option></select><span>每论点图片数</span><input value="1" style="max-width:60px;height:24px"/></div>
+      <!-- 第五行：关键词分析设置 -->
+      <div class="row"><label>关键词分析</label><span>来源</span><select style="height:24px"><option>本地分析</option><option>AI分析</option></select><span>AI模型</span><input placeholder="例如：便宜模型名称" style="max-width:200px;height:24px"/><span>API Key</span><input placeholder="AI分析 API Key" style="max-width:260px;height:24px"/></div>
+      <!-- 第六行：分割线、提示与保存配置按钮 -->
+      <div class="divider"></div>
+      <div class="row status"><span>分论点数：6 | 提示：配置在上方，表格在下方</span><button class="save" style="height:24px">保存配置</button><button id="fs-btn" class="secondary fs-btn" style="height:24px" onclick="toggleFullscreen()">全屏</button><button class="secondary fs-btn" style="height:24px" onclick="showToast('配置已保存（模拟）')">触发通知</button></div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="table-wrap">
+      <div class="table-wrapper">
+      <table class="table">
+      <thead>
+        <tr><th class="col-title">论点标题</th><th class="col-keyword">关键词</th><th class="col-preview">预览</th><th class="col-actions">操作</th><th class="col-status">状态</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>标题示例A</td>
+          <td>关键词A</td>
+          <td>
+            <div class="thumb" onclick="openPreview('https://picsum.photos/seed/a/1200/800')" title="点击预览">
+              <img src="https://picsum.photos/seed/a/280/200" alt="预览A" />
+            </div>
+          </td>
+          <td><div class="actions"><button class="secondary btn-sm">重新配图</button><button class="secondary btn-sm">替换本地图</button></div></td>
+          <td>未配图</td>
+        </tr>
+        <tr>
+          <td>标题示例B</td>
+          <td>关键词B</td>
+          <td>
+            <div class="thumb" onclick="openPreview('https://picsum.photos/seed/b/1200/800')" title="点击预览">
+              <img src="https://picsum.photos/seed/b/280/200" alt="预览B" />
+            </div>
+          </td>
+          <td><div class="actions"><button class="secondary btn-sm">重新配图</button><button class="secondary btn-sm">替换本地图</button></div></td>
+          <td>未配图</td>
+        </tr>
+      </tbody>
+      </table>
       </div>
     </div>
-    <div class="card" style="margin-top:20px;">
-      <div class="row">
-        <h1>同步飞书数据</h1>
-        <div class="label">工具条：刷新 / 配置；提示信息支持省略与点击复制；内容列自适应，用户列宽调整可记忆</div>
-      </div>
-      <div style="margin-top:12px; overflow:auto;">
-        <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
-          <thead>
-            <tr>
-              <th style="width:56px; text-align:left; border-bottom:1px solid #E5E5EA; padding:6px 8px;">ID</th>
-              <th style="width:40%; text-align:left; border-bottom:1px solid #E5E5EA; padding:6px 8px;">文案预览（去敏感词）</th>
-              <th style="width:96px; text-align:left; border-bottom:1px solid #E5E5EA; padding:6px 8px;">状态</th>
-              <th style="width:128px; text-align:left; border-bottom:1px solid #E5E5EA; padding:6px 8px;">更新时间</th>
-              <th style="width:120px; text-align:left; border-bottom:1px solid #E5E5EA; padding:6px 8px;">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="padding:6px 8px;">1</td>
-              <td style="padding:6px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="示例文案内容展示，悬浮查看完整">示例文案内容展示，悬浮查看完整</td>
-              <td style="padding:6px 8px;">未使用</td>
-              <td style="padding:6px 8px;">2025-10-03 10:55:00</td>
-              <td style="padding:6px 8px;"><button class="btn" style="min-height:24px; padding:2px 8px; font-size:13px;">去编辑</button></td>
-            </tr>
-            <tr>
-              <td style="padding:6px 8px;">2</td>
-              <td style="padding:6px 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="第二条文案内容预览">第二条文案内容预览</td>
-              <td style="padding:6px 8px;">已使用</td>
-              <td style="padding:6px 8px;">2025-10-03 10:55:00</td>
-              <td style="padding:6px 8px;"><button class="btn" style="min-height:24px; padding:2px 8px; font-size:13px;">去编辑</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="label" style="margin-top:12px; opacity:.8;">说明：实际窗口中列宽可拖动调整；“文案预览”默认单行省略显示；“去编辑”会更新状态为“已使用”、关闭窗口并把文案注入主编辑框，不修改标题。</div>
+
+    <div class="footer">
+      <button>批量自动配图</button>
+      <button>全部抠图</button>
+      <button>全部裁剪</button>
+      <button>写入模板并压缩</button>
+      <button class="secondary">返回</button>
     </div>
-  </body>
- </html>
+  </div>
+</body>
+</html>
+  <div id="preview" class="preview-modal" onclick="closePreview(event)">
+    <div class="preview-content">
+      <img id="preview-img" src="" alt="预览图" />
+    </div>
+  </div>
+  <div id="toast-modal" class="toast-modal" onclick="closeToast(event)">
+    <div class="toast-content" id="toast-content">通知内容</div>
+  </div>
+  <script>
+    function openPreview(url){
+      const modal = document.getElementById('preview');
+      const img = document.getElementById('preview-img');
+      img.src = url;
+      modal.style.display = 'flex';
+    }
+    function closePreview(e){
+      const modal = document.getElementById('preview');
+      if(e.target === modal){
+        modal.style.display = 'none';
+      }
+    }
+
+    // 全屏切换（浏览器全屏 API）
+    function toggleFullscreen(){
+      if(!document.fullscreenElement){
+        document.documentElement.requestFullscreen().catch(()=>{});
+      }else{
+        document.exitFullscreen().catch(()=>{});
+      }
+    }
+    function updateFsBtn(){
+      const btn = document.getElementById('fs-btn');
+      if(!btn) return;
+      btn.textContent = document.fullscreenElement ? '退出全屏' : '全屏';
+    }
+    document.addEventListener('fullscreenchange', updateFsBtn);
+
+    // 通知弹窗：3秒自动关闭 + 点击外部关闭
+    let toastTimer = null;
+    function showToast(text){
+      const modal = document.getElementById('toast-modal');
+      const content = document.getElementById('toast-content');
+      content.textContent = text || '通知';
+      modal.style.display = 'flex';
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ hideToast(); }, 3000);
+    }
+    function closeToast(e){
+      const modal = document.getElementById('toast-modal');
+      if(e.target === modal){ hideToast(); }
+    }
+    function hideToast(){
+      const modal = document.getElementById('toast-modal');
+      modal.style.display = 'none';
+      if(toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+    }
+  </script>

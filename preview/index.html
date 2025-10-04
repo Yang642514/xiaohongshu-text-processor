@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>设置页预览</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif; background:#f6f7f9; margin:0; padding:24px; color:#111827; }
+    .card { max-width: 720px; margin: 0 auto; background:#fff; border:1px solid #e5e7eb; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+    .card h1 { margin:0; padding:16px 20px; font-size:18px; border-bottom:1px solid #f0f2f5; }
+    .form { padding:16px 20px; }
+    .row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .label { width: 140px; text-align:right; color:#374151; }
+    .input { flex:1; height:32px; border:1px solid #d1d5db; border-radius:6px; padding:0 10px; }
+    .btn { height:32px; padding:0 14px; border:1px solid #d1d5db; background:#fff; border-radius:6px; cursor:pointer; }
+    .btn:hover { background:#f9fafb; }
+    .sep { height:1px; background:#f3f4f6; margin:12px 0; }
+    .actions { display:flex; justify-content:center; gap:12px; padding:12px 20px; }
+  </style>
+  </head>
+<body>
+  <div class="card">
+    <h1>设置（预览）</h1>
+    <div class="form">
+      <div class="row">
+        <div class="label">无图模板路径</div>
+        <input class="input" placeholder="例如：C:/path/to/template.xlsx" />
+        <button class="btn">浏览</button>
+      </div>
+      <div class="row">
+        <div class="label">有图模板路径</div>
+        <input class="input" placeholder="例如：C:/path/to/template_with_images.xlsx" />
+        <button class="btn">浏览</button>
+      </div>
+      <div class="row">
+        <div class="label">压缩包目录</div>
+        <input class="input" placeholder="例如：output" />
+        <button class="btn">浏览</button>
+      </div>
+      <div class="sep"></div>
+      <div class="actions">
+        <button class="btn">检测无图模板可用性</button>
+        <button class="btn">检测有图模板（含图片列）</button>
+        <button class="btn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h1>配图页底部操作（预览）</h1>
+    <div class="actions">
+      <button class="btn">批量自动配图</button>
+      <button class="btn">全部抠图</button>
+      <button class="btn">全部裁剪</button>
+      <button class="btn">写入模板并压缩（配图版）</button>
+      <button class="btn">返回</button>
+    </div>
+  </div>
+</body>
+</html>

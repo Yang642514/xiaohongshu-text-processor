@@ -1,0 +1,17 @@
+2025-10-03 21:37:27,880 [INFO] Logger initialized.
+2025-10-03 21:37:29,207 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 21:37:29,780 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 21:37:32,858 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 21:37:33,477 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 21:37:33,486 [INFO] [FeishuDialog] 刷新获取到 2 条记录
+2025-10-03 21:37:41,420 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 21:37:41,948 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 21:37:42,856 [INFO] [FeishuDialog] 刷新获取到 2 条记录
+2025-10-03 21:37:44,726 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 21:37:45,233 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 21:37:45,243 [INFO] [FeishuDialog] 刷新获取到 2 条记录
+2025-10-03 21:37:45,736 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 21:37:46,219 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-03 21:37:46,230 [INFO] [FeishuDialog] 刷新获取到 2 条记录
+2025-10-03 21:37:49,992 [INFO] 开始处理文案
+2025-10-03 21:37:49,994 [INFO] 解析标题: 中医推荐：3招低成本疏肝🔥, 分论点数: 6

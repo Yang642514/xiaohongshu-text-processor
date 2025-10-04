@@ -10,3 +10,5 @@ dependencies:
       - openpyxl
       - pyinstaller
       - Pillow
+      - rembg
+      - onnxruntime

@@ -13,12 +13,14 @@ from PyQt5.QtGui import QFontMetrics
 from app.core.feishu_client import FeishuClient
 from app.gui.feishu_config_dialog import FeishuConfigDialog
 from app.core.utils import save_settings
+from app.core.config_manager import ConfigManager
 
 
 class FeishuDialog(QDialog):
     def __init__(self, settings: Dict, on_edit: Callable[[Dict], None], parent=None, settings_path: str = None):
         super().__init__(parent)
-        self.settings = settings
+        # 使用共享设置对象
+        self.settings = ConfigManager.instance().settings
         self.on_edit = on_edit
         self.settings_path = settings_path
         self.setWindowTitle("同步飞书数据")
@@ -229,7 +231,10 @@ class FeishuDialog(QDialog):
                     try:
                         self.settings["feishu_cached_items"] = items
                         if self.settings_path:
-                            save_settings(self.settings_path, self.settings)
+                            try:
+                                ConfigManager.instance().save()
+                            except Exception:
+                                save_settings(self.settings_path, self.settings)
                     except Exception:
                         pass
                     # —— 调试输出：记录刷新获取到的数据 ——
@@ -276,14 +281,9 @@ class FeishuDialog(QDialog):
                 pass
 
     def open_config(self):
-        # 打开配置对话框，保存后刷新当前 settings 并重新加载
+        # 打开配置对话框；保存后直接使用共享 settings
         dlg = FeishuConfigDialog(self.settings, self.settings_path or "", self)
         if dlg.exec_() == dlg.Accepted:
-            # 重新加载设置文件以保持与主窗口一致
-            from app.core.utils import load_settings
-            if self.settings_path:
-                self.settings.clear()
-                self.settings.update(load_settings(self.settings_path))
             self.load_data()
 
     def _fill_table(self, items: List[Dict]):
@@ -369,23 +369,52 @@ class FeishuDialog(QDialog):
                                 pass
                             self.settings["feishu_used_records"] = sorted(list(used_records))
                             if self.settings_path:
-                                save_settings(self.settings_path, self.settings)
+                                try:
+                                    ConfigManager.instance().save()
+                                except Exception:
+                                    save_settings(self.settings_path, self.settings)
                     except Exception:
+                        # 本地标记失败不影响后续流程
                         pass
+                    # 先尝试标记“已使用”，失败也不阻塞后续流程
                     try:
-                        # 更新状态为“已使用”，并关闭窗口后填充编辑框
                         client = FeishuClient(self.settings)
-                        client.mark_record_as_used(payload)
+                        try:
+                            client.mark_record_as_used(payload)
+                        except Exception:
+                            # 忽略网络或权限错误
+                            pass
                     except Exception:
-                        # 状态更新失败不阻塞编辑注入流程
+                        # 构造客户端失败也不影响文案注入
                         pass
+                    # 始终注入文案到主窗口编辑框
+                    try:
+                        self.on_edit(payload)
+                    except Exception:
+                        pass
+                    # 关闭对话框
                     try:
                         self.accept()
-                    finally:
-                        try:
-                            self.on_edit(payload)
-                        except Exception:
-                            pass
+                    except Exception:
+                        pass
+                    # 尝试切换焦点到主窗口与编辑框（无论是否关闭成功）
+                    try:
+                        parent = self.parent()
+                        if parent is not None:
+                            try:
+                                parent.activateWindow()
+                                parent.raise_()
+                                parent.setFocus()
+                                try:
+                                    ti = getattr(parent, "text_input", None)
+                                    if ti is not None:
+                                        ti.setFocus()
+                                except Exception:
+                                    pass
+                            except Exception:
+                                pass
+                    except Exception:
+                        pass
                 return _cb
             btn.clicked.connect(make_cb(it, i))
             try:
@@ -452,7 +481,10 @@ class FeishuDialog(QDialog):
             self._snapshot_widths()
             self.settings["feishu_dialog_size"] = {"width": self.width(), "height": self.height()}
             if self.settings_path:
-                save_settings(self.settings_path, self.settings)
+                try:
+                    ConfigManager.instance().save()
+                except Exception:
+                    save_settings(self.settings_path, self.settings)
         except Exception:
             pass
 

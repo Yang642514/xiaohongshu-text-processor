@@ -3,6 +3,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from app.core.utils import load_settings, save_settings
+from app.core.config_manager import ConfigManager
 from app.gui.main_window import MainWindow
 from typing import Optional
 
@@ -55,9 +56,9 @@ def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     settings_path = os.path.join(base_dir, "app", "config", "default_settings.json")
 
-    # 加载设置并确保目录存在
-    settings = load_settings(settings_path)
-    ensure_dirs(settings)
+    # 初始化统一配置管理器并确保目录存在
+    cfg = ConfigManager.initialize(settings_path)
+    ensure_dirs(cfg.settings)
 
     app = QApplication(sys.argv)
     # 设置全局应用图标

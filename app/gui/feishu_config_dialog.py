@@ -7,10 +7,12 @@ from urllib.parse import urlparse, parse_qs
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QHBoxLayout,
-    QLabel, QMessageBox, QSizePolicy, QWidget, QComboBox
+    QLabel, QSizePolicy, QWidget, QComboBox
 )
+from app.gui.message_dialog import MessageDialog
 
 from app.core.utils import save_settings
+from app.core.config_manager import ConfigManager
 
 
 class FeishuConfigDialog(QDialog):
@@ -24,7 +26,8 @@ class FeishuConfigDialog(QDialog):
     def __init__(self, settings: Dict, settings_path: str, parent=None):
         super().__init__(parent)
         self.setWindowTitle("飞书配置")
-        self.settings = settings.copy()
+        # 使用共享设置对象
+        self.settings = ConfigManager.instance().settings
         self.settings_path = settings_path
 
         layout = QVBoxLayout()
@@ -220,14 +223,18 @@ class FeishuConfigDialog(QDialog):
             if derived:
                 updated.update(derived)
 
-            # 合并保存
+            # 合并保存：统一通过 ConfigManager.save()
             self.settings.update(updated)
-            save_settings(self.settings_path, self.settings)
+            try:
+                ConfigManager.instance().save()
+            except Exception:
+                # 回退以避免写盘失败导致未保存
+                save_settings(self.settings_path, self.settings)
 
-            QMessageBox.information(self, "成功", "配置已保存")
+            MessageDialog.info(self, "成功", "配置已保存")
             self.accept()
         except Exception as e:
-            QMessageBox.critical(self, "错误", f"保存失败：{e}")
+            MessageDialog.error(self, "错误", f"保存失败：{e}")
 
     def _test_connectivity(self):
         try:
@@ -287,23 +294,23 @@ class FeishuConfigDialog(QDialog):
                             self.content_field.setCurrentIndex(idx2 if idx2 >= 0 else 0)
                         # 触发一次联动以填充筛选值
                         self.status_field.currentTextChanged.emit(self.status_field.currentText())
-                        QMessageBox.information(self, "成功", f"鉴权成功，表访问成功：字段 {len(items)} 个，已填充下拉选项")
+                        MessageDialog.info(self, "成功", f"鉴权成功，表访问成功：字段 {len(items)} 个，已填充下拉选项")
                     else:
                         # 无字段返回：保留原有输入，不清空下拉框
-                        QMessageBox.information(
+                        MessageDialog.info(
                             self,
                             "成功",
                             "鉴权成功，已访问表，但未返回字段列表。可能原因：权限不足、表为空或链接未对应 app_token。"
                         )
                 except Exception:
                     # 即使解析失败也不影响鉴权提示
-                    QMessageBox.information(self, "成功", f"鉴权成功，表访问成功：但字段解析异常，请手动输入字段名。")
+                    MessageDialog.info(self, "成功", f"鉴权成功，表访问成功：但字段解析异常，请手动输入字段名。")
             else:
-                QMessageBox.information(
+                MessageDialog.info(
                     self,
                     "成功",
                     "鉴权成功（未识别表信息）。如果是 wiki 链接，无法直接解析 app_token，"
                     "请改用 base 形态链接并确保其中包含形如 app... 与 tbl... 的标识。"
                 )
         except Exception as e:
-            QMessageBox.critical(self, "错误", f"测试失败：{e}")
+            MessageDialog.error(self, "错误", f"测试失败：{e}")

@@ -6,7 +6,8 @@ from openpyxl import load_workbook
 
 def write_to_template(template_path: str, output_dir: str, title: str,
                       points: List[Tuple[str, str]],
-                      column_map: Dict[str, str]) -> str:
+                      column_map: Dict[str, str],
+                      images: Optional[List[Optional[str]]] = None) -> str:
     """
     将解析结果写入模板 Excel 的下一行：
     - column_map: { title_column, point_column, content_column }
@@ -26,6 +27,8 @@ def write_to_template(template_path: str, output_dir: str, title: str,
     # 新增必填列：文本_3（列名可配置），写入固定默认内容
     extra_text_col_name = column_map.get("extra_text_column", "文本_3") or "文本_3"
     extra_text_default = column_map.get("extra_text_default", "内容仅供参考，身体不适请及时就医!")
+    # 图片列（可选）：例如 图片_1，用于写入图片文件名。若模板不存在该列，则忽略。
+    image_col_name = column_map.get("image_column")
     need_cols = [page_col_name, point_title_col_name, point_content_col_name, extra_text_col_name]
 
     header_row = None
@@ -55,6 +58,7 @@ def write_to_template(template_path: str, output_dir: str, title: str,
     point_title_col = try_col_index_from_headers(point_title_col_name)
     point_content_col = try_col_index_from_headers(point_content_col_name)
     extra_text_col = try_col_index_from_headers(extra_text_col_name)
+    image_col = try_col_index_from_headers(image_col_name)
 
     if page_col is None or point_title_col is None or point_content_col is None or extra_text_col is None:
         missing = []
@@ -83,6 +87,19 @@ def write_to_template(template_path: str, output_dir: str, title: str,
         ws.cell(row=row, column=point_content_col, value=pt_content)
         # 写入文本_3默认内容
         ws.cell(row=row, column=extra_text_col, value=extra_text_default)
+        # 可选：写入图片文件名（例如 图片_1 列）
+        try:
+            if image_col is not None and isinstance(images, list):
+                img_path = images[idx] if idx < len(images) else None
+                # 仅写入不带后缀的文件名，例如 'image001'
+                img_name = None
+                if img_path:
+                    base = os.path.basename(img_path)
+                    img_name = os.path.splitext(base)[0]
+                ws.cell(row=row, column=image_col, value=img_name or "")
+        except Exception:
+            # 图片写入不影响整体流程
+            pass
 
     # 输出文件名：仅标题.xlsx（同名覆盖）
     os.makedirs(output_dir, exist_ok=True)

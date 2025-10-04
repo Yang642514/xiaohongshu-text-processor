@@ -12,10 +12,12 @@ from app.core.parser import extract_title_and_points, format_paragraphs, render_
 from app.core.excel_writer import write_to_template
 from app.core.zipper import make_zip
 from app.core.utils import load_settings, save_settings
+from app.core.config_manager import ConfigManager
 from app.gui.settings_dialog import SettingsDialog
 from app.gui.about_dialog import AboutDialog
 from app.gui.message_dialog import MessageDialog
 from app.gui.feishu_dialog import FeishuDialog
+from app.gui.image_dialog import ImageDialog
 
 
 class MainWindow(QMainWindow):
@@ -24,7 +26,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("文案转模板")
 
         self.settings_path = settings_path
-        self.settings = load_settings(settings_path)
+        # 使用统一配置管理器的共享 settings
+        self.settings = ConfigManager.instance().settings
         # 应用尾段过滤配置
         configure_tail_filter(self.settings)
 
@@ -65,6 +68,10 @@ class MainWindow(QMainWindow):
         self.process_btn = QPushButton("处理文案")
         self.process_btn.setFixedHeight(34)
         self.process_btn.clicked.connect(self.process_text)
+        # 新增：配图入口按钮
+        self.image_btn = QPushButton("配图")
+        self.image_btn.setFixedHeight(34)
+        self.image_btn.clicked.connect(self.open_image_dialog)
         self.write_zip_btn = QPushButton("写入模板并压缩")
         self.write_zip_btn.setFixedHeight(34)
         self.write_zip_btn.clicked.connect(self.write_and_zip)
@@ -75,6 +82,7 @@ class MainWindow(QMainWindow):
         self.clear_btn.setFixedHeight(34)
         self.clear_btn.clicked.connect(self.clear_text_and_title)
         btn_row.addWidget(self.process_btn)
+        btn_row.addWidget(self.image_btn)
         btn_row.addWidget(self.write_zip_btn)
         btn_row.addWidget(self.clear_btn)
         layout.addLayout(btn_row)
@@ -150,7 +158,10 @@ class MainWindow(QMainWindow):
         if dlg.exec_() == dlg.Accepted:
             updated = dlg.get_settings()
             self.settings.update(updated)
-            save_settings(self.settings_path, self.settings)
+            try:
+                ConfigManager.instance().save()
+            except Exception:
+                save_settings(self.settings_path, self.settings)
             # 更新解析器配置
             configure_tail_filter(self.settings)
             self.logger.info("设置已更新: %s", updated)
@@ -279,7 +290,8 @@ class MainWindow(QMainWindow):
                     "point_content_column": self.settings.get("point_content_column", "文本_2"),
                     # 新增：文本_3列与默认内容
                     "extra_text_column": self.settings.get("extra_text_column", "文本_3"),
-                    "extra_text_default": self.settings.get("extra_text_default", "内容仅供参考，身体不适请及时就医!")
+                    "extra_text_default": self.settings.get("extra_text_default", "内容仅供参考，身体不适请及时就医!"),
+                    "image_column": self.settings.get("image_column", "图片_1")
                 }
             )
             self.logger.info("已生成Excel: %s", out_xlsx)
@@ -312,3 +324,42 @@ class MainWindow(QMainWindow):
         self.last_title = ""
         self.theme_label.setText("当前主题：")
         self.status_label.setText("已清空：可粘贴新文案进行处理")
+
+    def open_image_dialog(self):
+        """打开配图页面：基于当前编辑框内容生成分论点并进入配图流程。"""
+        try:
+            processed_text = self.text_input.toPlainText().strip()
+            if not processed_text:
+                MessageDialog.warning(self, "提示", "编辑框为空，请粘贴或处理文案后再进入配图页")
+                return
+            # 优先按处理模板解析
+            pairs = parse_processed_template(processed_text)
+            if not pairs:
+                # 回退：按原文解析并做与处理流程一致的规整
+                title, points = extract_title_and_points(processed_text)
+                self.last_title = title or self.last_title or "输出"
+                formatted_points = []
+                for pt_title, pt_content in points:
+                    norm_title = normalize_punctuation(pt_title)
+                    norm_content = normalize_punctuation(pt_content)
+                    fmt_content = format_paragraphs(
+                        norm_content,
+                        max_lines=self.settings.get("max_lines_per_paragraph", 0),
+                        max_chars=self.settings.get("max_chars_per_line", 0)
+                    )
+                    formatted_points.append((norm_title, fmt_content))
+                pairs = formatted_points
+            # 打开配图页面
+            dlg = ImageDialog(self.settings, pairs, self.settings_path, self)
+            dlg.exec_()
+            # 配图对话框关闭后：通过配置管理器已是共享对象，无需额外重载
+            try:
+                self.status_label.setText("已保存配图配置并同步设置")
+            except Exception:
+                pass
+        except Exception as e:
+            try:
+                self.logger.exception("打开配图页面失败: %s", e)
+            except Exception:
+                pass
+            MessageDialog.error(self, "错误", f"打开配图页面失败：{e}")

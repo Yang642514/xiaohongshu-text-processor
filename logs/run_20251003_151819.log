@@ -1,0 +1,3 @@
+2025-10-03 15:18:19,966 [INFO] Logger initialized.
+2025-10-03 15:18:21,105 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-03 15:18:21,680 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json

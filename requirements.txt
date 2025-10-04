@@ -3,3 +3,5 @@ openpyxl>=3.1
 pyinstaller>=6.0
 Pillow>=10.0
 requests>=2.31
+rembg>=2.0.56
+onnxruntime>=1.18

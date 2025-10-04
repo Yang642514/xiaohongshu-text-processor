@@ -1,0 +1,13 @@
+2025-10-04 12:05:17,286 [INFO] Logger initialized.
+2025-10-04 12:05:18,837 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-04 12:05:19,497 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-04 12:06:16,674 [INFO] 设置已更新: {'template_excel_path': 'C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/template/稿定设计-数据上传无图模板.xlsx', 'template_excel_image_path': 'C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/template/稿定设计-数据上传有图模板.xlsx', 'zip_output_dir': 'C:/Users/30305/Desktop/workspace/小红书文案转搞定模板/output', 'page_column': '页面', 'point_title_column': '文本_1', 'point_content_column': '文本_2', 'extra_text_column': '文本_3', 'extra_text_default': '内容仅供参考，身体不适请及时就医!', 'image_column': '图片_1'}
+2025-10-04 12:06:18,728 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-04 12:06:19,284 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-04 12:06:19,291 [INFO] [FeishuDialog] 刷新获取到 2 条记录
+2025-10-04 12:06:37,213 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-04 12:06:37,709 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-04 12:06:37,714 [INFO] [FeishuDialog] 刷新获取到 2 条记录
+2025-10-04 12:08:05,547 [INFO] [FeishuClient] 字段映射: status='笔记状态'->fldOSMyroo, content='去敏感词'->fldTnwIoHy, title='标题'->fld4E5tsck
+2025-10-04 12:08:06,150 [INFO] [FeishuClient] 原始响应快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_raw_response.json | 映射信息: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_debug_meta.json | 请求快照: C:\Users\30305\Desktop\workspace\小红书文案转搞定模板\logs\feishu_refresh_search_payload.json
+2025-10-04 12:08:06,157 [INFO] [FeishuDialog] 刷新获取到 2 条记录
